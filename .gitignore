@@ -1,0 +1,13 @@
+# Debug
+test.js
+test.ts
+
+# dependencies
+node_modules
+
+# Environment files
+.env
+
+# Miscellaneous
+.DS_Store
+distribution/

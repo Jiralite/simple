@@ -1,0 +1,20 @@
+root: true
+parserOptions:
+  project: ./tsconfig.json
+env:
+  node: true
+extends:
+  - neon/common
+  - neon/module
+  - neon/node
+  - neon/typescript
+  - neon/prettier
+plugins:
+  - "@typescript-eslint"
+reportUnusedDisableDirectives: true
+rules:
+  "@typescript-eslint/consistent-type-definitions": 0
+  "@typescript-eslint/sort-type-constituents": 0
+  "@typescript-eslint/sort-type-union-intersection-members": 0
+  "typescript-sort-keys/interface": 0
+  "typescript-sort-keys/string-enum": 0
