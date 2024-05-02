@@ -14,7 +14,14 @@ const rest = new REST().setToken(DISCORD_TOKEN);
 
 try {
 	await rest.put(Routes.applicationCommands(APPLICATION_ID), {
-		body: [{ name: "ping", description: "Ping! Just kidding, you get a scary message.", contexts: [0, 1, 2], integration_types: [1] }],
+		body: [
+			{
+				name: "ping",
+				description: "Ping! Just kidding, you get a scary message.",
+				contexts: [0, 1, 2],
+				integration_types: [1],
+			},
+		],
 	});
 
 	pino.info("Successfully registered application commands.");
