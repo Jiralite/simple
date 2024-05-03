@@ -1,5 +1,5 @@
 import process from "node:process";
-import { Routes } from "@discordjs/core";
+import { ApplicationCommandOptionType, Routes } from "@discordjs/core";
 import { REST } from "@discordjs/rest";
 import pino from "./pino.js";
 
@@ -16,10 +16,18 @@ try {
 	await rest.put(Routes.applicationCommands(APPLICATION_ID), {
 		body: [
 			{
-				name: "ping",
-				description: "Ping! Just kidding, you get a scary message.",
+				name: "user-information",
+				description: "Returns information of a user.",
 				contexts: [0, 1, 2],
 				integration_types: [1],
+				options: [
+					{
+						type: ApplicationCommandOptionType.User,
+						name: "user",
+						description: "The user to get the information of.",
+						required: true,
+					},
+				],
 			},
 		],
 	});

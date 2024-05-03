@@ -17,6 +17,9 @@ importers:
       '@discordjs/ws':
         specifier: ^1.0.2
         version: 1.0.2
+      '@sapphire/snowflake':
+        specifier: ^3.5.3
+        version: 3.5.3
       pino:
         specifier: ^9.0.0
         version: 9.0.0

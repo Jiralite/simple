@@ -16,6 +16,7 @@
 		"@discordjs/core": "^1.1.1",
 		"@discordjs/rest": "^2.2.0",
 		"@discordjs/ws": "^1.0.2",
+		"@sapphire/snowflake": "^3.5.3",
 		"pino": "^9.0.0"
 	},
 	"devDependencies": {
