@@ -29,6 +29,29 @@ try {
 					},
 				],
 			},
+			{
+				name: "raw",
+				description: "Returns a raw payload.",
+				contexts: [0, 1, 2],
+				integration_types: [1],
+				options: [
+					{
+						type: ApplicationCommandOptionType.User,
+						name: "user",
+						description: "The user to get the payload of.",
+					},
+					{
+						type: ApplicationCommandOptionType.Channel,
+						name: "channel",
+						description: "The channel to get the payload of.",
+					},
+					{
+						type: ApplicationCommandOptionType.Role,
+						name: "role",
+						description: "The role to get the payload of.",
+					},
+				],
+			},
 		],
 	});
 

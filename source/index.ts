@@ -1,3 +1,4 @@
+import { Buffer } from "node:buffer";
 import process from "node:process";
 import {
 	ApplicationCommandOptionType,
@@ -148,6 +149,50 @@ client.on(GatewayDispatchEvents.InteractionCreate, async ({ api, data }) => {
 				],
 				flags: MessageFlags.Ephemeral,
 			});
+		}
+
+		if (commandName === "raw") {
+			let target;
+			let fetchUser = false;
+
+			switch (data.data.options?.[0]?.type) {
+				case ApplicationCommandOptionType.User:
+					target = data.data.resolved?.users?.[data.data.options[0].value];
+					fetchUser = true;
+					break;
+				case ApplicationCommandOptionType.Channel:
+					target = data.data.resolved?.channels?.[data.data.options[0].value];
+					break;
+				case ApplicationCommandOptionType.Role:
+					target = data.data.resolved?.roles?.[data.data.options[0].value];
+					break;
+				default:
+					target = data;
+			}
+
+			if (!target) {
+				pino.warn(data, "No data found.");
+
+				await api.interactions.reply(data.id, data.token, {
+					content: "No data found.",
+					flags: MessageFlags.Ephemeral,
+				});
+
+				return;
+			}
+
+			if (fetchUser) target = await api.users.get(target.id);
+			const targetData = JSON.stringify(target, null, 2);
+			const content = `\`\`\`JSON\n${targetData}\n\`\`\``;
+
+			if (content.length > 2_000) {
+				await api.interactions.reply(data.id, data.token, {
+					files: [{ contentType: "application/json", data: Buffer.from(targetData), name: "raw.json" }],
+					flags: MessageFlags.Ephemeral,
+				});
+			} else {
+				await api.interactions.reply(data.id, data.token, { content, flags: MessageFlags.Ephemeral });
+			}
 		}
 	}
 });
