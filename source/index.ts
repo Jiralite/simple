@@ -4,9 +4,11 @@ import {
 	ApplicationCommandOptionType,
 	ApplicationCommandType,
 	Client,
+	ComponentType,
 	GatewayDispatchEvents,
 	InteractionType,
 	MessageFlags,
+	TextInputStyle,
 	UserFlags,
 } from "@discordjs/core";
 import { REST, calculateUserDefaultAvatarIndex } from "@discordjs/rest";
@@ -29,6 +31,89 @@ const client = new Client({ rest, gateway });
 client.on(GatewayDispatchEvents.InteractionCreate, async ({ api, data }) => {
 	if (data.type === InteractionType.ApplicationCommand && data.data.type === ApplicationCommandType.ChatInput) {
 		const commandName = data.data.name;
+
+		if (commandName === "bug-report" && data.data.options?.[0]?.type === ApplicationCommandOptionType.String) {
+			const type = data.data.options[0].value;
+
+			await api.interactions.createModal(data.id, data.token, {
+				components: [
+					{
+						type: ComponentType.ActionRow,
+						components: [
+							{
+								type: ComponentType.TextInput,
+								custom_id: "bug-report-1",
+								label: "Description",
+								style: TextInputStyle.Short,
+								min_length: 10,
+								max_length: 200,
+								required: true,
+							},
+						],
+					},
+					{
+						type: ComponentType.ActionRow,
+						components: [
+							{
+								type: ComponentType.TextInput,
+								custom_id: "bug-report-2",
+								label: "Steps to Reproduce",
+								style: TextInputStyle.Paragraph,
+								min_length: 10,
+								max_length: 1_000,
+								placeholder: "1. Navigate to an element\n2. Double-tap\n3. Etc.",
+								required: true,
+							},
+						],
+					},
+					{
+						type: ComponentType.ActionRow,
+						components: [
+							{
+								type: ComponentType.TextInput,
+								custom_id: "bug-report-3",
+								label: "Expected Behaviour",
+								style: TextInputStyle.Short,
+								min_length: 10,
+								max_length: 350,
+								required: true,
+							},
+						],
+					},
+					{
+						type: ComponentType.ActionRow,
+						components: [
+							{
+								type: ComponentType.TextInput,
+								custom_id: "bug-report-4",
+								label: "Current Behaviour",
+								style: TextInputStyle.Short,
+								min_length: 10,
+								max_length: 350,
+								required: true,
+							},
+						],
+					},
+					{
+						type: ComponentType.ActionRow,
+						components: [
+							{
+								type: ComponentType.TextInput,
+								custom_id: "bug-report-5",
+								label: "Versions",
+								style: TextInputStyle.Short,
+								min_length: 10,
+								max_length: 500,
+								placeholder: "Input client and system versions.",
+								required: true,
+							},
+						],
+					},
+				],
+				custom_id: `bug-report§${type}`,
+				title: `${type} Report`,
+			});
+		}
 
 		if (commandName === "user-information" && data.data.options?.[0]?.type === ApplicationCommandOptionType.User) {
 			const user = data.data.resolved?.users?.[data.data.options[0].value];
@@ -193,6 +278,24 @@ client.on(GatewayDispatchEvents.InteractionCreate, async ({ api, data }) => {
 			} else {
 				await api.interactions.reply(data.id, data.token, { content, flags: MessageFlags.Ephemeral });
 			}
+		}
+	}
+
+	if (data.type === InteractionType.ModalSubmit) {
+		const customId = data.data.custom_id;
+
+		if (customId.startsWith("bug-report")) {
+			const type = customId.slice(customId.indexOf("§") + 1);
+			const description = data.data.components[0]?.components[0]?.value;
+			const stepsToReproduce = data.data.components[1]?.components[0]?.value;
+			const expectedBehaviour = data.data.components[2]?.components[0]?.value;
+			const currentBehaviour = data.data.components[3]?.components[0]?.value;
+			const versions = data.data.components[4]?.components[0]?.value;
+
+			await api.interactions.reply(data.id, data.token, {
+				content: `## Type\n${type}\n## Description\n${description}\n## Steps to Reproduce\n${stepsToReproduce}\n## Expected Behaviour\n${expectedBehaviour}\n## Current Behaviour\n${currentBehaviour}\n## Versions\n${versions}`,
+				flags: MessageFlags.Ephemeral,
+			});
 		}
 	}
 });
