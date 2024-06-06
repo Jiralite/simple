@@ -1,5 +1,5 @@
 import process from "node:process";
-import { ApplicationCommandOptionType, Routes } from "@discordjs/core";
+import { ApplicationCommandOptionType, ApplicationCommandType, Routes } from "@discordjs/core";
 import { REST } from "@discordjs/rest";
 import { BugReportType } from "./constants.js";
 import pino from "./pino.js";
@@ -55,6 +55,18 @@ const GLOBL_COMMANDS = [
 				description: "The role to get the payload of.",
 			},
 		],
+	},
+	{
+		name: "Raw",
+		type: ApplicationCommandType.User,
+		contexts: [0, 1, 2],
+		integration_types: [1],
+	},
+	{
+		name: "Raw",
+		type: ApplicationCommandType.Message,
+		contexts: [0, 1, 2],
+		integration_types: [1],
 	},
 ] as const;
 
